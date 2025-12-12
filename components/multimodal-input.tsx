@@ -30,7 +30,15 @@ import { cn, getSystemInfo } from "@/lib/utils";
 import { ArrowUpIcon, SparklesIcon } from "./icons";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { Monitor, Command, Box, Cloud, Globe } from "@geist-ui/icons";
+import {
+  Monitor,
+  Command,
+  Box,
+  Cloud,
+  Globe,
+  EyeOff,
+  Trash,
+} from "@geist-ui/icons";
 import { generateAction } from "@/lib/ai";
 
 export function MultimodalInput({
@@ -78,8 +86,16 @@ export function MultimodalInput({
     const osName = systemInfo.os.osName;
 
     setSuggestedActions([
-      ...(osName ? [{ text: `Update ${osName}`, icon: "command" }] : []),
-      { text: "Change DNS to 1.1.1.1", icon: "globe" },
+      ...(osName !== "macOS"
+        ? [{ text: `Update ${osName}`, icon: "command" }]
+        : [
+            {
+              text: 'Disable Mac "Liquid Glass"',
+              icon: "eye-off",
+            },
+          ]),
+      { text: "Uninstall McAfee", icon: "trash" },
+      // { text: "Change DNS to 1.1.1.1", icon: "globe" },
       { text: "Create S3 bucket on Google Cloud", icon: "box" },
     ]);
   }, []);
@@ -136,6 +152,10 @@ export function MultimodalInput({
         return <Cloud size={16} />;
       case "globe":
         return <Globe size={16} />;
+      case "eye-off":
+        return <EyeOff size={16} />;
+      case "trash":
+        return <Trash size={16} />;
       default:
         return null;
     }
