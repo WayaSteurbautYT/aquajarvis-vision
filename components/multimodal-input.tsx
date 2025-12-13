@@ -86,16 +86,15 @@ export function MultimodalInput({
     const osName = systemInfo.os.osName;
 
     setSuggestedActions([
+      { text: `Update ${osName}`, icon: "command" },
       ...(osName !== "macOS"
-        ? [{ text: `Update ${osName}`, icon: "command" }]
+        ? [{ text: "Change DNS to 1.1.1.1", icon: "globe" }]
         : [
             {
               text: 'Disable Mac "Liquid Glass"',
               icon: "eye-off",
             },
           ]),
-      { text: "Uninstall McAfee", icon: "trash" },
-      // { text: "Change DNS to 1.1.1.1", icon: "globe" },
       { text: "Create S3 bucket on Google Cloud", icon: "box" },
     ]);
   }, []);
