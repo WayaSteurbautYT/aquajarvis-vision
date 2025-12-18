@@ -46,16 +46,9 @@ export const MinimalTaskScreen = ({
         <div className="flex-1 flex items-center justify-center w-full">
           <div className="max-w-[600px] mx-auto w-full px-4">
             {goal && (
-              <div className="mb-4 text-center">
-                <h1
-                  className="text-4xl font-medium opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: "0ms" }}
-                >
-                  {goal}
-                </h1>
-
+              <div className="mb-2 text-center">
                 <p
-                  className="mt-2 text-md text-gray-500 opacity-0 animate-fade-in-up"
+                  className="text-md text-gray-600 opacity-0 animate-fade-in-up"
                   style={{ animationDelay: "100ms" }}
                 >
                   Follow the steps at the bottom right of your screen.
