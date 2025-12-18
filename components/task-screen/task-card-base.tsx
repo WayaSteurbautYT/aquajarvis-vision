@@ -27,7 +27,6 @@ export const TaskCardBase = ({
   useEffect(() => {
     const storage = localStorage.getItem("disabledone");
 
-    console.log("storage", storage);
     setIsDoneDisabled(!!storage);
   }, []);
 

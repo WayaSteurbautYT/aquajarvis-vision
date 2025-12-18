@@ -142,7 +142,8 @@ export const useTaskPip = () => {
 
       // Prevent double scrollbar by hiding overflow on body
       const pipBodyStyle = pipWindow.document.createElement("style");
-      pipBodyStyle.textContent = "html, body { overflow: hidden; margin: 0; padding: 0; height: 100%; }";
+      pipBodyStyle.textContent =
+        "html, body { overflow: hidden; margin: 0; padding: 0; height: 100%; }";
       pipWindow.document.head.appendChild(pipBodyStyle);
 
       // Create or get container

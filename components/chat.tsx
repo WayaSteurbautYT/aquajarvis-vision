@@ -7,11 +7,12 @@ import { useTaskPip } from "@/hooks/pip";
 import { useTasks } from "@/app/providers/TaskProvider";
 import { useAnalytics } from "@/app/providers/AnalyticsProvider";
 import { useSettings } from "@/app/providers/SettingsProvider";
-import { TaskScreen } from "./task-screen";
+import { MinimalTaskScreen } from "./task-screen";
 import { SafariSettingsGuide } from "./safari-settings-guide";
 import { ScreenshareModal } from "./screenshare-modal";
 import { SettingsModal } from "./settings-modal";
-import { Monitor, Github, Settings, Cpu } from "@geist-ui/icons";
+import { Monitor } from "@geist-ui/icons";
+import { Navbar } from "./navbar";
 import { LoaderIcon } from "./icons";
 
 const HISTORY_STATE_KEY = "screen-vision-session";
@@ -75,6 +76,7 @@ export function Chat() {
     trackTaskRefreshed,
     trackAllTasksCompleted,
     trackSuggestedActionClicked,
+    trackFeedbackSubmit,
   } = useAnalytics();
 
   const [input, setInput] = React.useState("");
@@ -120,7 +122,7 @@ export function Chat() {
     } else {
       setTimeout(() => {
         openPipWindow();
-      }, 500);
+      }, 250);
     }
   };
 
@@ -219,7 +221,7 @@ export function Chat() {
     if (hasSubmittedProblem && isSharing && !shouldShowSafariGuide) {
       setTimeout(() => {
         openPipWindow();
-      }, 1000);
+      }, 250);
 
       if (!hasTriggeredFirstTask.current) {
         hasTriggeredFirstTask.current = true;
@@ -255,44 +257,13 @@ export function Chat() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [isSharing, handleStartOver]);
 
-  const navbar = (
-    <div className="fixed top-0 left-0 right-0 p-4 flex justify-between items-center z-50">
-      <div className="flex items-center gap-2">
-        <img src="/logo.png" height={40} width={180} />
-      </div>
-      <div className="flex items-center gap-2">
-        <a
-          href="https://github.com/bullmeza/screen.vision"
-          target="_blank"
-          className="flex items-center gap-2 px-3 py-1.5 bg-black text-white border border-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
-        >
-          <Github size={16} />
-          <span className="text-sm">Star on GitHub</span>
-          <span className="text-xs font-medium bg-gray-100 px-1.5 py-0.5 rounded-md text-black">
-            {githubStars >= 1000
-              ? `${(githubStars / 1000).toFixed(1)}k`
-              : githubStars}
-          </span>
-        </a>
-
-        <button
-          onClick={openSettings}
-          className="hidden md:flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <Cpu size={16} />
-
-          <span className="text-sm">Local Mode</span>
-        </button>
-      </div>
-    </div>
-  );
-
   // Show Safari settings guide before screen sharing if needed
   if (showSafariSettingsGuide && !isSharing) {
     return (
       <>
         <div className="flex justify-center items-center flex-col h-[100dvh]">
-          {navbar}
+          <Navbar githubStars={githubStars} openSettings={openSettings} />
+
           <div className="flex flex-col justify-center items-center max-w-[800px] w-full font-inter">
             <SafariSettingsGuide onComplete={handleSafariSettingsComplete} />
           </div>
@@ -330,7 +301,8 @@ export function Chat() {
         <SettingsModal />
 
         <div className="min-h-screen bg-grid-pattern">
-          {navbar}
+          <Navbar githubStars={githubStars} openSettings={openSettings} />
+
           <div className="flex justify-center items-center flex-col h-[75dvh]">
             <div className="flex flex-col justify-center items-center max-w-[800px] w-full font-inter px-4">
               {showMobileBlocked ? (
@@ -352,7 +324,7 @@ export function Chat() {
                     Share your screen with AI
                   </h1>
                   <h2 className="mb-8 text-center text-xl text-gray-500">
-                    Get an AI guided step-by-step fix for your problem.
+                    Get a guided tour for anything, right on your screen.
                   </h2>
 
                   <div className="w-full relative">
@@ -398,7 +370,8 @@ export function Chat() {
     return (
       <>
         <div className="flex justify-center items-center flex-col h-[100dvh]">
-          {navbar}
+          <Navbar githubStars={githubStars} openSettings={openSettings} />
+
           <div className="flex flex-col justify-center items-center max-w-[800px] w-full font-inter">
             <SafariSettingsGuide onComplete={handleSafariSettingsComplete} />
           </div>
@@ -409,17 +382,14 @@ export function Chat() {
 
   return (
     <>
-      <TaskScreen
-        {...taskContext}
-        goal={goal}
-        tasks={tasks}
-        onNextTask={onNextTask}
-        onStartOver={handleStartOver}
-        isLoading={isLoadingTask}
-        isPip={false}
-        onTaskRefreshed={trackTaskRefreshed}
-        onAllTasksCompleted={trackAllTasksCompleted}
+      <Navbar
+        githubStars={githubStars}
+        openSettings={openSettings}
+        showLocalMode={false}
+        grayMode={true}
       />
+
+      <MinimalTaskScreen goal={goal} onFeedbackSubmit={trackFeedbackSubmit} />
     </>
   );
 }

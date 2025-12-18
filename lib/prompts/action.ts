@@ -42,5 +42,5 @@ A screenshot of the user's current screen state.
 - If the screen shows an unexpected state (error, wrong page), provide an instruction to recover
 
 # Output Format
-Single instruction only (no explanations, no numbering). If the goal is achieved, return "Done"`;
+Single instruction only (no explanations, no numbering, no bolding). If the goal is achieved, return "Done"`;
 }

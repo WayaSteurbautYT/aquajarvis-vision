@@ -38,6 +38,7 @@ interface AnalyticsContextType {
 
   trackMaxStepsExceeded: () => void;
   trackStartOverClicked: () => void;
+  trackFeedbackSubmit: (type: "positive" | "negative", text: string) => void;
 
   getCurrentSessionId: () => string | null;
 }
@@ -219,6 +220,17 @@ export function AnalyticsProvider({ children }: { children: ReactNode }) {
     endQuestionSession("started_over");
   }, [posthog, getSessionProperties, endQuestionSession]);
 
+  const trackFeedbackSubmit = useCallback(
+    (type: "positive" | "negative", text: string) => {
+      posthog.capture("feedback_submitted", {
+        ...getSessionProperties(),
+        feedback_type: type,
+        feedback_text: text,
+      });
+    },
+    [posthog, getSessionProperties]
+  );
+
   const getCurrentSessionId = useCallback(() => {
     return sessionRef.current?.id ?? null;
   }, []);
@@ -239,6 +251,7 @@ export function AnalyticsProvider({ children }: { children: ReactNode }) {
         trackFollowupResponseReceived,
         trackMaxStepsExceeded,
         trackStartOverClicked,
+        trackFeedbackSubmit,
         getCurrentSessionId,
       }}
     >

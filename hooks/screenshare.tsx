@@ -76,16 +76,8 @@ export const useScreenShare = create<ScreenShareState>((set, get) => {
       set({ isAnalyzingScreenChange: value }),
 
     requestScreenShare: async () => {
-      console.log(
-        `[${performance.now().toFixed(2)}ms] requestScreenShare: START`
-      );
       set({ isRequestingScreenShare: true });
       try {
-        console.log(
-          `[${performance
-            .now()
-            .toFixed(2)}ms] requestScreenShare: calling getDisplayMedia`
-        );
         const stream = await navigator.mediaDevices.getDisplayMedia({
           video: {
             displaySurface: "monitor",
@@ -98,21 +90,7 @@ export const useScreenShare = create<ScreenShareState>((set, get) => {
         // sleep for 150ms
         await new Promise((resolve) => setTimeout(resolve, 150));
 
-        console.log(
-          `[${performance
-            .now()
-            .toFixed(
-              2
-            )}ms] requestScreenShare: getDisplayMedia returned, calling startSharing`
-        );
         get().startSharing(stream);
-        console.log(
-          `[${performance
-            .now()
-            .toFixed(
-              2
-            )}ms] requestScreenShare: startSharing completed, returning true`
-        );
         return true;
       } catch (error) {
         console.error("Error sharing screen:", error);
@@ -123,22 +101,11 @@ export const useScreenShare = create<ScreenShareState>((set, get) => {
     },
 
     startSharing: (stream: MediaStream) => {
-      console.log(
-        `[${performance
-          .now()
-          .toFixed(2)}ms] startSharing: setting isSharing=true`
-      );
-      set({ stream, isSharing: true });
-      console.log(
-        `[${performance
-          .now()
-          .toFixed(2)}ms] startSharing: isSharing set to true`
-      );
-
-      // Auto-stop when user stops via browser
       stream.getVideoTracks()[0].addEventListener("ended", () => {
         get().stopSharing();
       });
+
+      set({ stream, isSharing: true });
     },
 
     stopSharing: () => {
