@@ -328,14 +328,9 @@ export async function checkStepCompletion(
 
     const cleanText = text.replace(/```json\n|\n```/g, "").trim();
 
-    try {
-      const result = JSON.parse(cleanText);
-      console.log(result);
-      return result.status === "Yes";
-    } catch (parseError) {
-      console.error("Failed to parse check completion JSON:", text);
-      return text.includes('"status": "Yes"');
-    }
+    console.log(cleanText);
+
+    return cleanText.toLowerCase().includes("yes");
   } catch (e) {
     console.error("Error checking step completion:", e);
     return false;

@@ -10,18 +10,8 @@ Process:
 3. Determine if the goal has been completed based on the transition.
 
 Rules:
-- Return a JSON object with "reasoning" (string) and "status" (string).
-- "status" = "Yes" ONLY if extremely confident the goal is completely finished and the after screenshot clearly shows the expected end state.
-- "status" = "No" if there is ANY doubt, partial completion, no meaningful change, or a pre-action state (hover, focus, loading).
+- Return "Yes" ONLY if extremely confident the goal is completely finished and the after screenshot clearly shows the expected end state.
+- Return "No" if there is ANY doubt, partial completion, no meaningful change, or a pre-action state (hover, focus, loading).
 
-The reasoning should be a short and concise explanation of the reasoning behind the status.
-
-Example:
-{
-  "reasoning": "The after screenshot shows the button clicked and a new modal appearing.",
-  "status": "Yes"
+Format your response as a very concise reasoning (under 10 words), followed by "Yes" or "No" on the last line.`;
 }
-
-Return only the JSON object.`;
-}
-

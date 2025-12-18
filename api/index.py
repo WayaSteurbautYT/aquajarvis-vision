@@ -83,13 +83,14 @@ async def handle_check_chat(request: FastAPIRequest, body: MessagesRequest):
 
     stream = client.chat.completions.create(
         messages=body.messages,
-        model="qwen/qwen3-vl-235b-a22b-instruct",
+        model="google/gemini-3-flash-preview",
         extra_body={
             "provider": {
-                "order": ["Fireworks", "DeepInfra"],
+                "order": ["Google AI Studio"],
                 "allow_fallbacks": True,
             }
         },
+        reasoning_effort="minimal",
         stream=True,
     )
 
