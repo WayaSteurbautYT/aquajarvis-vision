@@ -248,10 +248,10 @@ export const useScreenShare = create<ScreenShareState>((set, get) => {
       options: ChangeDetectionOptions = {}
     ) => {
       const {
-        threshold = 1,
+        threshold = 0.8,
         checkIntervalMs = 200,
-        scaleFactor = 0.1,
-        captureDelayMs = 100,
+        scaleFactor = 0.2,
+        captureDelayMs = 300,
       } = options;
 
       const { stream } = get();

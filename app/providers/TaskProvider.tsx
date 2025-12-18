@@ -90,6 +90,16 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   const changeDetectionStartedRef = useRef(false);
   const isCheckingStepRef = useRef(false);
   const pendingCheckImageRef = useRef<string | null>(null);
+  const cancelPendingChecksRef = useRef(false);
+  const checkVersionRef = useRef(0);
+
+  const cancelPendingChecks = () => {
+    checkVersionRef.current++;
+    cancelPendingChecksRef.current = true;
+    pendingCheckImageRef.current = null;
+    isCheckingStepRef.current = false;
+    setIsAnalyzingScreenChange(false);
+  };
 
   const hasExceededMaxSteps = totalTaskGeneration >= MAX_STEPS;
 
@@ -100,9 +110,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   }, [hasExceededMaxSteps, totalTaskGeneration, trackMaxStepsExceeded]);
 
   const triggerGenerateTaskDescription = async () => {
-    console.log(`[${performance.now().toFixed(2)}ms] triggerGenerateTaskDescription: START`);
     if (hasExceededMaxSteps || isTriggeringRef.current) {
-      console.log(`[${performance.now().toFixed(2)}ms] triggerGenerateTaskDescription: SKIPPED (hasExceededMaxSteps=${hasExceededMaxSteps}, isTriggeringRef=${isTriggeringRef.current})`);
       return;
     }
 
@@ -110,9 +118,10 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
-      console.log(`[${performance.now().toFixed(2)}ms] triggerGenerateTaskDescription: capturing image`);
-      const captured = await captureImageFromStream({ isLocalLlm: isUsingLocalProvider });
-      console.log(`[${performance.now().toFixed(2)}ms] triggerGenerateTaskDescription: image captured`);
+      const captured = await captureImageFromStream({
+        isLocalLlm: isUsingLocalProvider,
+      });
+
       const imageDataUrl = captured.scaledImageDataUrl;
       const nonScaledImage = captured.nonScaledImageDataUrl;
 
@@ -137,7 +146,6 @@ export function TaskProvider({ children }: { children: ReactNode }) {
         setTotalTaskCount((prev) => Math.max(0, prev - 1));
       }
 
-      console.log(`[${performance.now().toFixed(2)}ms] triggerGenerateTaskDescription: calling generateAction`);
       const action = await generateAction(
         goal,
         imageDataUrl,
@@ -146,15 +154,12 @@ export function TaskProvider({ children }: { children: ReactNode }) {
         osName,
         followUpContext
       );
-      console.log(`[${performance.now().toFixed(2)}ms] triggerGenerateTaskDescription: generateAction completed`);
 
       lastScreenshotRef.current = imageDataUrl;
 
       setTotalTaskGeneration((prev) => prev + 1);
 
       const text = action.trim();
-
-      console.log(`[${performance.now().toFixed(2)}ms] triggerGenerateTaskDescription: action text:`, text);
 
       setTotalTaskCount((prev) => prev + 1);
 
@@ -182,7 +187,11 @@ export function TaskProvider({ children }: { children: ReactNode }) {
       setIsLoadingPreviewImage(true);
 
       if (!isLink && !isStandardizedInstruction && text) {
-        const coordinates = await generateCoordinate(text, nonScaledImage, settings);
+        const coordinates = await generateCoordinate(
+          text,
+          nonScaledImage,
+          settings
+        );
         const coordinatePattern = /^-?\d+,\s*-?\d+$/;
 
         if (coordinates && coordinatePattern.test(coordinates.trim())) {
@@ -235,6 +244,9 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   };
 
   const processScreenChange = async (scaledImage: string) => {
+    const currentVersion = ++checkVersionRef.current;
+    cancelPendingChecksRef.current = false;
+
     const currentTaskText = tasksRef.current[tasksRef.current.length - 1]?.text;
     if (!currentTaskText || isTriggeringRef.current) {
       setIsAnalyzingScreenChange(false);
@@ -272,6 +284,10 @@ export function TaskProvider({ children }: { children: ReactNode }) {
         settings
       );
 
+      if (currentVersion !== checkVersionRef.current) {
+        return;
+      }
+
       isCheckingStepRef.current = false;
 
       const pendingImage = pendingCheckImageRef.current;
@@ -279,13 +295,18 @@ export function TaskProvider({ children }: { children: ReactNode }) {
 
       if (isCompleted) {
         setIsAnalyzingScreenChange(false);
-        setAutoCompleteTriggered((prev) => prev + 1);
+        if (!cancelPendingChecksRef.current) {
+          setAutoCompleteTriggered((prev) => prev + 1);
+        }
       } else if (pendingImage) {
         await processScreenChange(pendingImage);
       } else {
         setIsAnalyzingScreenChange(false);
       }
     } catch (e) {
+      if (currentVersion !== checkVersionRef.current) {
+        return;
+      }
       console.error("Error in processScreenChange:", e);
       isCheckingStepRef.current = false;
       setIsAnalyzingScreenChange(false);
@@ -294,6 +315,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
 
   const onNextTask = () => {
     if (hasExceededMaxSteps) return;
+    cancelPendingChecks();
     triggerGenerateTaskDescription();
   };
 
@@ -390,8 +412,9 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     let isRegenerating = false;
 
     try {
-      const { scaledImageDataUrl: imageDataUrl } =
-        await captureImageFromStream({ isLocalLlm: isUsingLocalProvider });
+      const { scaledImageDataUrl: imageDataUrl } = await captureImageFromStream(
+        { isLocalLlm: isUsingLocalProvider }
+      );
 
       const currentTaskText =
         tasksRef.current[tasksRef.current.length - 1]?.text ?? "";
