@@ -46,7 +46,13 @@ const FollowUpDropdown = ({
       </button>
       {isOpen && (
         <div className="mt-2 text-sm animate-fade-in-up text-foreground/70">
-          <Markdown>{followUp.answer}</Markdown>
+          {followUp.answer ? (
+            <Markdown>{followUp.answer}</Markdown>
+          ) : (
+            <span className="text-xs text-foreground/50 animate-fade-in-pulse">
+              Loading...
+            </span>
+          )}
         </div>
       )}
     </div>

@@ -416,9 +416,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     trackFollowupQuestionAsked(question);
 
     setIsLoadingFollowUp(true);
-
-    let hasAddedFollowUp = false;
-    let isRegenerating = false;
+    addFollowUpToCurrentTask({ question, answer: "" });
 
     try {
       const { scaledImageDataUrl: imageDataUrl } = await captureImageFromStream(
@@ -428,56 +426,21 @@ export function TaskProvider({ children }: { children: ReactNode }) {
       const currentTaskText =
         tasksRef.current[tasksRef.current.length - 1]?.text ?? "";
 
-      const text = await generateHelpResponse(
+      await generateHelpResponse(
         goal,
         imageDataUrl,
         question,
         currentTaskText,
         settings,
         (streamedMessage) => {
-          if (isRegenerating) return;
-
-          if ("Regenerate".startsWith(streamedMessage)) {
-            return;
-          }
-
-          if (streamedMessage.trim() === "Regenerate") {
-            isRegenerating = true;
-            if (hasAddedFollowUp) {
-              removeLastFollowUpFromCurrentTask();
-              hasAddedFollowUp = false;
-            }
-            return;
-          }
-
-          if (!hasAddedFollowUp) {
-            addFollowUpToCurrentTask({ question, answer: streamedMessage });
-            hasAddedFollowUp = true;
-          } else {
-            updateCurrentFollowUpAnswer(streamedMessage);
-          }
+          updateCurrentFollowUpAnswer(streamedMessage);
         }
       );
 
-      if (text.trim() === "Regenerate") {
-        if (hasAddedFollowUp) {
-          removeLastFollowUpFromCurrentTask();
-        }
-        pendingFollowUpRef.current = question;
-        setIsLoadingFollowUp(false);
-        triggerGenerateTaskDescription();
-        return;
-      }
-
-      if (!hasAddedFollowUp) {
-        addFollowUpToCurrentTask({ question, answer: text });
-      }
       trackFollowupResponseReceived(question);
     } catch (e) {
       console.error(e);
-      if (hasAddedFollowUp) {
-        removeLastFollowUpFromCurrentTask();
-      }
+      removeLastFollowUpFromCurrentTask();
     }
 
     setIsLoadingFollowUp(false);
