@@ -24,4 +24,3 @@ If the user indicates the instruction doesn't apply to their screen, acknowledge
 - Use simple language - no jargon, no emojis, no keyboard shortcuts
 - Keep answers very concise and simple`;
 }
-
