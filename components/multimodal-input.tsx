@@ -78,9 +78,9 @@ export function MultimodalInput({
   >([]);
 
   useEffect(() => {
-    const disableRecommendations = localStorage.getItem("recommendations");
+    const isDemo = localStorage.getItem("demo");
 
-    if (disableRecommendations) return;
+    if (isDemo) return;
 
     const systemInfo = getSystemInfo();
     const osName = systemInfo.os.osName;

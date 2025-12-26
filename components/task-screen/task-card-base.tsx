@@ -25,9 +25,9 @@ export const TaskCardBase = ({
   const [isDoneDisabled, setIsDoneDisabled] = useState(false);
 
   useEffect(() => {
-    const storage = localStorage.getItem("disabledone");
+    const isDemo = localStorage.getItem("demo");
 
-    setIsDoneDisabled(!!storage);
+    setIsDoneDisabled(!!isDemo);
   }, []);
 
   useEffect(() => {
