@@ -1,14 +1,35 @@
 {
-  "name": "nextjs-fastapi",
-  "version": "0.1.0",
+  "name": "screen-vision-local-ollama",
+  "version": "1.0.0",
+  "description": "Screen Vision - Local Ollama Edition: Get AI-guided screen assistance with 100% local processing and privacy",
   "private": true,
+  "keywords": [
+    "ai",
+    "screen-sharing",
+    "vision",
+    "ollama",
+    "local-ai",
+    "privacy",
+    "step-by-step",
+    "ui-assistance"
+  ],
+  "author": "bullmeza",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bullmeza/screen.vision.git"
+  },
+  "homepage": "https://github.com/bullmeza/screen.vision#readme",
   "scripts": {
     "fastapi-dev": "uv run python -m uvicorn api.index:app --reload",
     "next-dev": "next dev",
     "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup": "python app.py",
+    "setup-windows": "powershell -ExecutionPolicy Bypass -File setup.ps1",
+    "setup-unix": "chmod +x setup.sh && ./setup.sh"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.68",
