@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaJarvis Vision</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/utilities.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-aqua">Aqua</div>
+                    <div class="logo-jarvis">Jarvis</div>
+                    <div class="logo-vision">Vision</div>
+                </div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">Initializing your local AI assistant...</div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-mini">AJ</div>
+                    <span class="sidebar-title">AquaJarvis</span>
+                </div>
+                <div class="status-indicator" id="status-indicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Ready</span>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Workspace</div>
+                    <a href="#" class="nav-item active" data-page="workflows">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Workflows</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="models">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                        <span>Models</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="tools">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                        <span>Tools</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item" data-page="logs">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>Logs</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="settings">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M12 1v6m0 6v6m4.22-13.22l4.24 4.24M1.54 9.96l4.24 4.24m12.44 0l4.24 4.24M1.54 14.04l4.24-4.24"></path>
+                        </svg>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="emergency-stop" id="emergency-stop">
+                    <svg class="emergency-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                    </svg>
+                    <span>Emergency Stop</span>
+                </div>
+                <div class="version-info">v1.0.0</div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title" id="page-title">Workflows</h1>
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-item">Home</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="breadcrumb-item current" id="breadcrumb-current">Workflows</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" id="new-workflow-btn">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        New Workflow
+                    </button>
+                    <div class="voice-input-toggle" id="voice-toggle">
+                        <svg class="voice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <!-- Workflows Page -->
+                <div id="workflows-page" class="page active">
+                    <div class="workflows-grid">
+                        <div class="workflow-card">
+                            <div class="workflow-header">
+                                <h3>Screen Analysis</h3>
+                                <div class="workflow-status status-ready"></div>
+                            </div>
+                            <div class="workflow-description">
+                                Analyze screen content and identify UI elements for automation
+                            </div>
+                            <div class="workflow-actions">
+                                <button class="btn btn-secondary">Edit</button>
+                                <button class="btn btn-primary">Run</button>
+                            </div>
+                        </div>
+
+                        <div class="workflow-card">
+                            <div class="workflow-header">
+                                <h3>Voice Command</h3>
+                                <div class="workflow-status status-ready"></div>
+                            </div>
+                            <div class="workflow-description">
+                                Execute voice commands with natural language processing
+                            </div>
+                            <div class="workflow-actions">
+                                <button class="btn btn-secondary">Edit</button>
+                                <button class="btn btn-primary">Run</button>
+                            </div>
+                        </div>
+
+                        <div class="workflow-card add-workflow">
+                            <div class="add-workflow-content">
+                                <svg class="add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>Create New Workflow</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Models Page -->
+                <div id="models-page" class="page">
+                    <div class="models-container">
+                        <div class="models-header">
+                            <h2>Local AI Models</h2>
+                            <button class="btn btn-primary" id="install-model-btn">Install Model</button>
+                        </div>
+                        <div class="models-grid" id="models-grid">
+                            <!-- Models will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tools Page -->
+                <div id="tools-page" class="page">
+                    <div class="tools-container">
+                        <div class="tools-header">
+                            <h2>Generated Tools</h2>
+                            <button class="btn btn-primary" id="create-tool-btn">Create Tool</button>
+                        </div>
+                        <div class="tools-list" id="tools-list">
+                            <!-- Tools will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs Page -->
+                <div id="logs-page" class="page">
+                    <div class="logs-container">
+                        <div class="logs-header">
+                            <h2>Activity Logs</h2>
+                            <div class="logs-controls">
+                                <button class="btn btn-secondary" id="clear-logs-btn">Clear Logs</button>
+                                <button class="btn btn-secondary" id="export-logs-btn">Export Logs</button>
+                            </div>
+                        </div>
+                        <div class="logs-content" id="logs-content">
+                            <!-- Logs will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settings-page" class="page">
+                    <div class="settings-container">
+                        <div class="settings-sections">
+                            <!-- Permissions Section -->
+                            <div class="settings-section">
+                                <h3>Permissions</h3>
+                                <div class="permission-items">
+                                    <div class="permission-item">
+                                        <label class="permission-label">
+                                            <input type="checkbox" id="perm-screen-capture">
+                                            <span class="permission-text">Screen Capture</span>
+                                        </label>
+                                        <p class="permission-description">Allow access to capture screen content for vision analysis</p>
+                                    </div>
+                                    <div class="permission-item">
+                                        <label class="permission-label">
+                                            <input type="checkbox" id="perm-mouse-keyboard">
+                                            <span class="permission-text">Mouse & Keyboard Control</span>
+                                        </label>
+                                        <p class="permission-description">Allow control of mouse and keyboard for automation</p>
+                                    </div>
+                                    <div class="permission-item">
+                                        <label class="permission-label">
+                                            <input type="checkbox" id="perm-voice-input">
+                                            <span class="permission-text">Voice Input</span>
+                                        </label>
+                                        <p class="permission-description">Allow access to microphone for voice commands</p>
+                                    </div>
+                                    <div class="permission-item">
+                                        <label class="permission-label">
+                                            <input type="checkbox" id="perm-file-access">
+                                            <span class="permission-text">File Access</span>
+                                        </label>
+                                        <p class="permission-description">Allow access to files for tool generation and learning</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Appearance Section -->
+                            <div class="settings-section">
+                                <h3>Appearance</h3>
+                                <div class="setting-item">
+                                    <label for="color-scheme">Color Scheme</label>
+                                    <select id="color-scheme">
+                                        <option value="aquamarine">Aquamarine</option>
+                                        <option value="gold-black">Gold + Black</option>
+                                        <option value="silver-blue">Silver + Tech Blue</option>
+                                        <option value="bronze-black">Bronze + Black</option>
+                                        <option value="brown-green">Brown + Green</option>
+                                        <option value="white-purple">White + Red + Dark Purple</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <label for="font-size">Font Size</label>
+                                    <input type="range" id="font-size" min="12" max="20" value="14">
+                                </div>
+                            </div>
+
+                            <!-- Local Learning Section -->
+                            <div class="settings-section">
+                                <h3>Local Learning</h3>
+                                <div class="setting-item">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="enable-learning" checked>
+                                        <span>Enable Local Learning</span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <button class="btn btn-secondary" id="clear-learning-btn">Clear Learning Data</button>
+                                    <button class="btn btn-secondary" id="export-learning-btn">Export Learning Data</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Log Panel -->
+            <div class="log-panel" id="log-panel">
+                <div class="log-panel-header">
+                    <h4>Live Activity Log</h4>
+                    <button class="log-panel-toggle" id="log-panel-toggle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <div class="log-panel-content" id="log-panel-content">
+                    <!-- Live logs will appear here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        <!-- Onboarding Modal -->
+        <div id="onboarding-modal" class="modal" style="display: none;">
+            <div class="modal-header">
+                <h2>Welcome to AquaJarvis Vision</h2>
+                <button class="modal-close" id="onboarding-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="onboarding-steps">
+                    <div class="step active" id="step-1">
+                        <h3>🎯 Your Local AI Assistant</h3>
+                        <p>AquaJarvis Vision is a privacy-first, local desktop assistant that combines screen vision, automation, and voice control.</p>
+                        <ul>
+                            <li>✅ All AI processing happens locally</li>
+                            <li>✅ No data sent to external servers</li>
+                            <li>✅ You control all permissions</li>
+                            <li>✅ Free and open source</li>
+                        </ul>
+                    </div>
+                    <div class="step" id="step-2">
+                        <h3>🔐 Permissions & Privacy</h3>
+                        <p>AquaJarvis needs your permission to access system resources. You can grant or revoke permissions at any time.</p>
+                        <div class="permission-preview">
+                            <div class="perm-item">📸 Screen Capture</div>
+                            <div class="perm-item">🖱️ Mouse & Keyboard</div>
+                            <div class="perm-item">🎤 Voice Input</div>
+                            <div class="perm-item">📁 File Access</div>
+                        </div>
+                    </div>
+                    <div class="step" id="step-3">
+                        <h3>🤖 Local AI Models</h3>
+                        <p>AquaJarvis uses Ollama to run AI models locally on your machine. We'll help you set this up.</p>
+                        <div class="model-preview">
+                            <div class="model-item">💬 Chat Models (LLaMA, Mistral)</div>
+                            <div class="model-item">👁️ Vision Models</div>
+                            <div class="model-item">🔧 Code Generation Models</div>
+                        </div>
+                    </div>
+                    <div class="step" id="step-4">
+                        <h3>🎨 Voice & Automation</h3>
+                        <p>Use your voice to control applications and automate repetitive tasks.</p>
+                        <div class="automation-preview">
+                            <div class="auto-item">🗣️ "Jarvis, open Photoshop and crop the top 20%"</div>
+                            <div class="auto-item">⚡ Create custom workflows</div>
+                            <div class="auto-item">🧠 Learns from your patterns</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="onboarding-prev">Previous</button>
+                <button class="btn btn-primary" id="onboarding-next">Next</button>
+                <button class="btn btn-primary" id="onboarding-finish" style="display: none;">Get Started</button>
+            </div>
+        </div>
+
+        <!-- About Modal -->
+        <div id="about-modal" class="modal" style="display: none;">
+            <div class="modal-header">
+                <h2>About AquaJarvis Vision</h2>
+                <button class="modal-close" id="about-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="about-content">
+                    <div class="about-logo">
+                        <div class="logo">
+                            <div class="logo-aqua">Aqua</div>
+                            <div class="logo-jarvis">Jarvis</div>
+                            <div class="logo-vision">Vision</div>
+                        </div>
+                    </div>
+                    <div class="about-info">
+                        <h3>Local Desktop Vision & Automation Tool</h3>
+                        <p>Version 1.0.0</p>
+                        <p>Created and adapted by Waya Steurbaut</p>
+                        <p class="privacy-statement">
+                            <strong>Privacy by Design:</strong> All AI processing happens locally on your device. 
+                            No data is sent to external servers unless you explicitly enable it.
+                        </p>
+                    </div>
+                    <div class="about-links">
+                        <h4>Creator & Community</h4>
+                        <div class="link-grid">
+                            <a href="#" class="link-item" data-url="https://www.youtube.com/@wayasteurbaut">
+                                <span class="link-icon">📺</span>
+                                YouTube - WayaCreate
+                            </a>
+                            <a href="#" class="link-item" data-url="https://www.tiktok.com/@wayacreateytr">
+                                <span class="link-icon">🎵</span>
+                                TikTok - WayaCreateYTR
+                            </a>
+                            <a href="#" class="link-item" data-url="https://wayashub.framer.ai/">
+                                <span class="link-icon">🌐</span>
+                                Website - WayaHub
+                            </a>
+                            <a href="#" class="link-item" data-url="https://discord.com/invite/u7GA3MEa7X">
+                                <span class="link-icon">💬</span>
+                                Discord Community
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="about-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/onboarding.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/tools.js"></script>
+    <script src="js/logs.js"></script>
+</body>
+</html>

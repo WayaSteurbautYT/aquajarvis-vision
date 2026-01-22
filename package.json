@@ -1,74 +1,116 @@
 {
-  "name": "screen-vision-local-ollama",
+  "name": "aquajarvis-vision",
   "version": "1.0.0",
-  "description": "Screen Vision - Local Ollama Edition: Get AI-guided screen assistance with 100% local processing and privacy",
-  "private": true,
-  "keywords": [
-    "ai",
-    "screen-sharing",
-    "vision",
-    "ollama",
-    "local-ai",
-    "privacy",
-    "step-by-step",
-    "ui-assistance"
-  ],
-  "author": "bullmeza",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bullmeza/screen.vision.git"
+  "description": "AquaJarvis Vision — Local Desktop Vision and Automation Tool",
+  "main": "src/main.js",
+  "homepage": "./",
+  "author": {
+    "name": "Waya Steurbaut",
+    "email": "contact@wayashub.framer.ai"
   },
-  "homepage": "https://github.com/bullmeza/screen.vision#readme",
+  "license": "MIT",
+  "private": true,
   "scripts": {
-    "fastapi-dev": "uv run python -m uvicorn api.index:app --reload",
-    "next-dev": "next dev",
-    "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "setup": "python app.py",
-    "setup-windows": "powershell -ExecutionPolicy Bypass -File setup.ps1",
-    "setup-unix": "chmod +x setup.sh && ./setup.sh"
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "npm run build:renderer && npm run build:main",
+    "build:renderer": "webpack --mode production",
+    "build:main": "webpack --config webpack.main.config.js --mode production",
+    "build:win": "electron-builder --win",
+    "dist": "npm run build && electron-builder",
+    "pack": "npm run build && electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps",
+    "setup-dev": "node scripts/setup-dev.js",
+    "setup-ollama": "node scripts/setup-ollama.js"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.68",
-    "@ai-sdk/react": "^2.0.76",
-    "@geist-ui/icons": "^1.0.2",
-    "@next/font": "^14.2.15",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@types/node": "20.2.4",
-    "@types/react": "18.2.7",
-    "@types/react-dom": "18.2.4",
-    "@vercel/analytics": "^1.3.1",
-    "@vercel/kv": "^2.0.0",
-    "ai": "^5.0.76",
-    "autoprefixer": "10.4.14",
-    "axios": "^1.13.2",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "concurrently": "^8.0.1",
-    "date-fns": "^4.1.0",
-    "eslint": "8.41.0",
-    "eslint-config-next": "13.4.4",
-    "framer-motion": "^11.11.17",
-    "geist": "^1.3.1",
-    "lucide-react": "^0.460.0",
-    "next": "13.4.4",
-    "postcss": "8.4.23",
-    "posthog-js": "^1.299.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-markdown": "^9.0.1",
-    "remark-gfm": "^4.0.0",
-    "sonner": "^1.5.0",
-    "tailwind-merge": "^2.5.4",
-    "tailwindcss": "3.4.15",
-    "tailwindcss-animate": "^1.0.7",
-    "types": "link:next-themes/dist/types",
-    "typescript": "5.0.4",
-    "usehooks-ts": "^3.1.0",
-    "zod": "^4.0.0",
-    "zustand": "^5.0.8"
-  }
+    "electron": "^28.0.0",
+    "electron-store": "^8.1.0",
+    "node-cron": "^3.0.3",
+    "systeminformation": "^5.21.20",
+    "robotjs": "^0.6.0",
+    "sharp": "^0.33.1",
+    "node-screenshot": "^1.0.2",
+    "ws": "^8.16.0",
+    "axios": "^1.6.5",
+    "node-machine-id": "^1.1.12",
+    "crypto-js": "^4.2.0",
+    "sqlite3": "^5.1.6",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "winston": "^3.11.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.9.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "html-webpack-plugin": "^5.6.0",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.5",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2"
+  },
+  "build": {
+    "appId": "com.wayasteurbaut.aquajarvis-vision",
+    "productName": "AquaJarvis Vision",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "tools",
+        "to": "tools"
+      },
+      {
+        "from": "scripts",
+        "to": "scripts"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "assets/icons/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AquaJarvis Vision"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "wayasteurbaut",
+      "repo": "AquaJarvis-Vision"
+    }
+  },
+  "keywords": [
+    "electron",
+    "automation",
+    "vision",
+    "ai",
+    "local",
+    "privacy",
+    "desktop",
+    "jarvis",
+    "voice",
+    "screen-capture"
+  ]
 }
