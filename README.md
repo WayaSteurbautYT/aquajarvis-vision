@@ -1,280 +1,731 @@
-<div align="center">
+\# AquaJarvis Vision
 
-# Screen Vision - Local Ollama Edition
 
-### Get a guided tour for anything, right on your screen - 100% Local & Private
 
-</div>
+\*\*AquaJarvis Vision — Local Desktop Vision and Automation Tool\*\*  
 
-![Screen Vision Demo](demo.gif)
+Created and adapted by \*\*Waya Steurbaut\*\*. A privacy‑first, local, free Windows Electron app that combines screen vision, desktop automation, and voice control into a Jarvis‑like assistant optimized for NVIDIA users while remaining compatible with all systems.
 
-## What's New in Local Edition
 
-This version replaces ALL cloud dependencies with **local AI models** for complete privacy and offline functionality:
-
-**No API keys required**  
-**100% local processing**  
-**Works with Ollama, OpenRouter, and other local providers**  
-**Supports free local models**  
-**Runs on Windows, macOS, and Linux**  
-**NVIDIA GPU acceleration supported**  
-
-## Quick Start (5 minutes)
-
-### 1. Install Ollama
-```bash
-# Windows/macOS: Download from https://ollama.com/
-# Linux:
-curl -fsSL https://ollama.com/install.sh | sh
-```
-
-### 2. Pull Vision Model
-```bash
-ollama pull qwen3-vl
-```
-
-### 3. Run Screen Vision
-```bash
-git clone https://github.com/bullmeza/screen.vision.git
-cd screen.vision
-pip install -r requirements.txt
-python app.py
-```
-
-Visit `http://localhost:8000` and start using Screen Vision locally!
-
-## How It Works
-
-The system is straightforward:
-
-1. **You describe your goal** — "I want to set up two-factor authentication on my Google account" or "Help me configure my Git SSH keys"
-
-2. **You share your screen** — The app uses your browser's built-in screen sharing (the same tech used for video calls)
-
-3. **Local AI analyzes what it sees** — Vision language models run locally on your machine to figure out current state
-
-4. **You get one instruction at a time** — No information overload. Just "Click the blue Settings button in the top right" or "Scroll down to find Security"
-
-5. **Automatic progress detection** — When you complete a step, Screen Vision notices the screen changed and automatically gives you the next instruction
-
-## Supported Models
-
-### Local Models (Recommended)
-| Model | Provider | Purpose | Requirements |
-|-------|----------|---------|-------------|
-| **qwen3-vl** | Ollama | Primary vision model | 8GB+ RAM, GPU recommended |
-| **llava** | Ollama | Alternative vision | 8GB+ RAM |
-| **bakllava** | Ollama | Lightweight vision | 4GB+ RAM |
-
-### Cloud Models (Optional)
-| Model | Provider | Purpose |
-|-------|----------|---------|
-| **GPT-4V** | OpenRouter | Premium vision |
-| **Claude-3** | OpenRouter | Advanced reasoning |
-| **Gemini Pro** | OpenRouter | Fast analysis |
-
-## Configuration
-
-### Environment Variables (Optional)
-
-Create a `.env` file for custom configuration:
-
-```bash
-# Local Ollama (default)
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=qwen3-vl
-
-# Optional: OpenRouter for cloud models
-OPENROUTER_API_KEY=sk-or-v1-...
-OPENROUTER_MODEL=qwen/qwen3-vl-30b-a3b-instruct
-
-# Optional: Custom local provider
-CUSTOM_API_BASE_URL=http://localhost:8080
-CUSTOM_API_KEY=your-key
-```
-
-### Model Selection
-
-The app automatically detects available models. You can force a specific model:
-
-```bash
-# Use specific Ollama model
-OLLAMA_MODEL=llava python app.py
-
-# Use OpenRouter cloud model
-OPENROUTER_API_KEY=your-key python app.py
-```
-
-## Privacy & Security
-
-**100% Local Processing** - This version processes everything locally:
-
-- **Zero data leaves your machine**
-- **No API keys or cloud dependencies**
-- **Works completely offline**
-- **No telemetry or analytics**
-- **Open source and auditable**
-
-## Tech Stack
-
-- **Frontend**: Next.js 13, React 18, Tailwind CSS, Zustand
-- **Backend**: FastAPI, Python
-- **AI**: Ollama (local), OpenRouter (optional cloud)
-- **UI**: Radix primitives, Framer Motion, Lucide icons
-
-**Frontend (Next.js + React)**
-
-- Handles screen capture via MediaDevices API
-- Runs change detection by comparing scaled-down frames
-- Manages PiP window for always-on-top instructions
-- Masks its own window from screenshots (so AI doesn't see itself)
-
-**Backend (FastAPI + Python)**
-
-- `/api/step` — Given a goal and screenshot, returns the next single instruction
-- `/api/check` — Compares before/after screenshots to verify if a step was completed
-- `/api/help` — Answers follow-up questions about what's on screen
-- `/api/coordinates` — Locates specific UI elements when needed
-
-## Installation & Setup
-
-### Prerequisites
-
-- Python 3.10+
-- Ollama (recommended) or other local LLM provider
-- NVIDIA GPU (recommended but not required)
-
-### Option 1: One-Click Setup (Windows)
-
-```powershell
-# Run this in PowerShell as Administrator
-iwr -useb https://raw.githubusercontent.com/bullmeza/screen.vision/main/setup.ps1 | iex
-```
-
-### Option 2: Manual Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/bullmeza/screen.vision.git
-cd screen.vision
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Install Ollama (if not already installed)
-# Windows/macOS: Download from https://ollama.com/
-# Linux: curl -fsSL https://ollama.com/install.sh | sh
-
-# Pull the vision model
-ollama pull qwen3-vl
-
-# Run the application
-python app.py
-```
-
-### Option 3: Development Mode
-
-For frontend development with hot reload:
-
-```bash
-# Install frontend dependencies
-npm install
-
-# Start both frontend and backend
-npm run dev
-```
-
-This runs:
-- Next.js dev server on `http://localhost:3000`
-- FastAPI server on `http://localhost:8000`
-
-## Usage
-
-1. **Start the app**: `python app.py`
-2. **Open browser**: Navigate to `http://localhost:8000`
-3. **Describe your goal**: "Help me set up two-factor authentication"
-4. **Share your screen**: Allow browser screen sharing
-5. **Follow instructions**: Get step-by-step guidance
-
-## Switching Between Providers
-
-### Using Ollama (Default)
-```bash
-python app.py
-```
-
-### Using OpenRouter (Cloud)
-```bash
-export OPENROUTER_API_KEY=your-key
-python app.py
-```
-
-### Using Custom Local Provider
-```bash
-export CUSTOM_API_BASE_URL=http://localhost:8080
-export CUSTOM_API_KEY=your-key
-python app.py
-```
-
-## Troubleshooting
-
-### Model Not Found
-```bash
-# Check available models
-ollama list
-
-# Pull the required model
-ollama pull qwen3-vl
-```
-
-### GPU Not Detected
-```bash
-# Check Ollama GPU support
-ollama run qwen3-vl "test"
-
-# If GPU issues, try CPU-only mode
-export OLLAMA_GPU=nvidia
-```
-
-### Port Already in Use
-```bash
-# Use different port
-python -c "import uvicorn; uvicorn.run('api.index:app', port=8001)"
-```
-
-## Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test with local models
-5. Submit a pull request
-
-### Adding New Model Providers
-
-To add support for new local model providers:
-
-1. Create a new client in `api/utils/`
-2. Update `api/index.py` to use your client
-3. Add configuration options to `.env.example`
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [Ollama](https://ollama.com/) for local LLM hosting
-- [Qwen](https://qwenlm.github.io/) for the excellent vision model
-- [OpenRouter](https://openrouter.ai/) for cloud model access
-- The original Screen Vision project for the core concept
 
 ---
 
-**Star this repo if you find it useful!**
 
-**Report issues at [GitHub Issues](https://github.com/bullmeza/screen.vision/issues)**
 
-**Join discussions at [GitHub Discussions](https://github.com/bullmeza/screen.vision/discussions)**
+\## Quick overview
+
+
+
+\*\*Purpose\*\*  
+
+Turn an existing modified repository into a clean, local Electron desktop app that: detects system specs, runs local AI models (Ollama), accepts free offline voice input, learns locally, auto‑generates small automation tools, and optionally controls mouse and keyboard only with explicit user consent.
+
+
+
+\*\*Key principles\*\*
+
+\- \*\*Local first\*\*: models, learning data, and generated tools are stored and executed locally by default.  
+
+\- \*\*Privacy by design\*\*: nothing is sent online unless the user explicitly opts in.  
+
+\- \*\*User control\*\*: every automation, input permission, and generated tool requires explicit approval.  
+
+\- \*\*Free and open\*\*: open‑source repo, free to run, and easy to build into a Windows installer.
+
+
+
+---
+
+
+
+\## Repo handling and setup tasks (do this first)
+
+
+
+\*\*Goal\*\* Keep the current folder and Git history, remove all project files except `.git`, then initialize the new Electron app in the same folder.
+
+
+
+\*\*Task list\*\*
+
+
+
+1\. \*\*Save current modifications to your GitHub account\*\*
+
+&nbsp;  - Fork or duplicate the current modified repo into your GitHub account.
+
+&nbsp;  - Push all local changes and verify the remote is fully synced.
+
+
+
+2\. \*\*Prepare the working folder (same folder method)\*\*
+
+&nbsp;  - Stay in the current folder (do not create a new folder).
+
+&nbsp;  - \*\*Delete all files and folders except the `.git` directory\*\*.
+
+&nbsp;    - Keep `.git` intact to preserve full commit history.
+
+&nbsp;    - Remove build artifacts, node\_modules, source files, assets, and any other project folders.
+
+&nbsp;  - Confirm the working tree is clean except for `.git`.
+
+
+
+3\. \*\*Reinitialize project structure for AquaJarvis Vision\*\*
+
+&nbsp;  - Create a new project scaffold for an Electron app in the same folder.
+
+&nbsp;  - Add new source folders (e.g., `src/`, `app/`, `tools/`, `mcp\_local/`, `assets/`, `build/`).
+
+&nbsp;  - Add a new `package.json`, Electron main process, renderer scaffolding, and build scripts.
+
+&nbsp;  - Commit the new structure to the existing Git history.
+
+
+
+4\. \*\*Rename and update remote repository\*\*
+
+&nbsp;  - Rename the GitHub repo to `AquaJarvis-Vision` (or create a new repo and update `origin`).
+
+&nbsp;  - Update remote origin if necessary:
+
+&nbsp;    ```bash
+
+&nbsp;    git remote set-url origin git@github.com:YOUR\_USERNAME/AquaJarvis-Vision.git
+
+&nbsp;    git push -u origin main
+
+&nbsp;    ```
+
+
+
+5\. \*\*Use modified repo logic\*\*
+
+&nbsp;  - Reuse useful scripts, configuration, and logic from the previous repo where applicable.
+
+&nbsp;  - Ensure any reused code is adapted to the new Electron architecture and local‑first model handling.
+
+
+
+---
+
+
+
+\## Project structure suggestion
+
+
+
+```
+
+AquaJarvis-Vision/
+
+├─ .git/
+
+├─ package.json
+
+├─ README.md
+
+├─ src/
+
+│  ├─ main.js
+
+│  ├─ preload.js
+
+│  └─ renderer/
+
+│     ├─ index.html
+
+│     ├─ styles/
+
+│     └─ components/
+
+├─ tools/
+
+│  └─ generated/
+
+├─ mcp\_local/
+
+├─ assets/
+
+│  ├─ icons/
+
+│  └─ animations/
+
+├─ build/
+
+│  └─ electron-builder-config.json
+
+├─ docs/
+
+│  └─ onboarding.md
+
+└─ scripts/
+
+&nbsp;  ├─ setup-ollama.sh
+
+&nbsp;  └─ build-windows.sh
+
+```
+
+
+
+---
+
+
+
+\## Core features
+
+
+
+\### System detection and optimization
+
+\- Auto detect \*\*CPU, RAM, GPU, VRAM, OS version, and storage\*\*.  
+
+\- Provide \*\*minimum\*\* and \*\*recommended\*\* requirement checks.  
+
+\- \*\*NVIDIA optimization\*\*: detect CUDA availability and recommend CUDA‑enabled models when appropriate.  
+
+\- Warn about models that exceed available VRAM or CPU limits.
+
+
+
+\### Local AI and model handling
+
+\- One‑click \*\*Ollama\*\* install and configuration script with verification steps.  
+
+\- Detect installed local models and recommend which are safe to run on the current hardware.  
+
+\- Default to \*\*local models\*\*; allow optional MCPs only when the user explicitly enables them.  
+
+\- Provide a model manager UI to install, remove, and inspect local models.
+
+
+
+\### Desktop automation
+
+\- Optional mouse and keyboard control \*\*only after explicit permission\*\*.  
+
+\- Create, run, pause, stop, and edit automation workflows.  
+
+\- Support automation for desktop apps, games, Blender, and other GUI tools using vision + input.  
+
+\- Real‑time activity log with timestamps, actions, and results.
+
+
+
+\### Vision integration
+
+\- Screen analysis to locate UI elements and contextual regions.  
+
+\- Vision‑based triggers and selectors for robust automation.  
+
+\- Visual debugging overlay for development and permissioned use.
+
+
+
+\### Free voice input
+
+\- Integrate offline or open STT engines such as \*\*Vosk\*\*, \*\*Coqui STT\*\*, or \*\*Whisper.cpp\*\*.  
+
+\- Provide \*\*push‑to‑talk\*\* and optional \*\*always‑listening\*\* (off by default).  
+
+\- Support wake phrase, command parsing, confirmation prompts, and real‑time UI feedback.  
+
+\- Include voice command examples in onboarding.
+
+
+
+\### Local learning and personalization
+
+\- Local Learning Engine stores patterns in an \*\*encrypted local file\*\*.  
+
+\- Suggest automations based on repeated tasks and user behavior.  
+
+\- Improve voice recognition for the user’s vocabulary over time.  
+
+\- Allow users to view, export, or delete local learning data.
+
+
+
+\### Local tool and MCP generation
+
+\- Auto‑generate small scripts or modules for repeated tasks (stored in `/tools` or `/mcp\_local`).  
+
+\- Require user approval and optional editing before activation.  
+
+\- UI to enable/disable, edit, delete, and view logs for generated tools.  
+
+\- Keep all generated tools local by default.
+
+
+
+---
+
+
+
+\## Voice Vision Automation example
+
+
+
+\*\*User command\*\*  
+
+> “Jarvis, open Photoshop, crop the top 20%, and save it as a new file.”
+
+
+
+\*\*Agent flow\*\*
+
+1\. Parse voice command and show parsed intent in UI.  
+
+2\. Use vision to locate Photoshop window and relevant UI elements.  
+
+3\. Execute the automation steps (open file, crop, save) using mouse/keyboard input if permitted.  
+
+4\. Log each step with timestamps and results.  
+
+5\. Ask for confirmation if any step is ambiguous.
+
+
+
+---
+
+
+
+\## UI and brand guidelines
+
+
+
+\*\*Name\*\*: `AquaJarvis Vision`  
+
+\*\*Primary aesthetic\*\*: clean, modern, tech‑friendly, trustable.
+
+
+
+\*\*Layout\*\*
+
+\- \*\*Sidebar navigation\*\* (Workflows, Models, Tools, Logs, Settings, About)  
+
+\- \*\*Main workspace\*\* for building and running automations  
+
+\- \*\*Live log panel\*\* visible by default or dockable
+
+
+
+\*\*Animated loading screen\*\*
+
+\- Aquamarine animated gradient with subtle motion and the app name.
+
+
+
+\*\*Font\*\*
+
+\- Use a modern geometric sans‑serif with bold and readable weights (avoid system default fonts). Examples to consider: \*\*Inter\*\*, \*\*Poppins\*\*, \*\*Montserrat\*\*.
+
+
+
+\*\*Color schemes (user selectable)\*\*
+
+\- \*\*Aquamarine\*\* (primary)  
+
+\- \*\*Gold + black\*\*  
+
+\- \*\*Silver + techy dark blue\*\*  
+
+\- \*\*Bronze + black\*\*  
+
+\- \*\*Brown + green paper/karton vibe\*\*  
+
+\- \*\*White + red + dark purple\*\*
+
+
+
+\*\*Icons and accessibility\*\*
+
+\- Use clear icons for permissions and actions.  
+
+\- High contrast mode and adjustable font sizes.
+
+
+
+---
+
+
+
+\## Onboarding and tutorial
+
+
+
+\*\*First launch interactive tutorial\*\*
+
+1\. Welcome screen and short explanation of AquaJarvis Vision.  
+
+2\. Permissions walkthrough (screen access, mouse/keyboard control, file access, voice).  
+
+3\. Ollama setup and model selection.  
+
+4\. Create a simple automation example step‑by‑step.  
+
+5\. Show how to view logs, stop tasks, and change settings.  
+
+6\. Explain Local Learning and generated tools.  
+
+7\. Provide voice command examples and a practice area.
+
+
+
+\*\*Help\*\*
+
+\- Re‑launchable tutorial from \*\*Help / Tutorial\*\*.  
+
+\- Contextual tooltips and a searchable help index.
+
+
+
+---
+
+
+
+\## Build and distribution
+
+
+
+\*\*Development\*\*
+
+\- Provide `scripts/setup-dev.sh` to install dependencies and prepare the environment.  
+
+\- Provide `scripts/setup-ollama.sh` to install and configure Ollama locally.
+
+
+
+\*\*Build\*\*
+
+\- Use Electron + electron-builder or equivalent to produce a Windows installer (.exe).  
+
+\- Include build scripts:
+
+&nbsp; ```bash
+
+&nbsp; # install deps
+
+&nbsp; npm install
+
+
+
+&nbsp; # dev
+
+&nbsp; npm run dev
+
+
+
+&nbsp; # build windows installer
+
+&nbsp; npm run build:win
+
+&nbsp; ```
+
+\- Document signing and installer options in `docs/build.md`.
+
+
+
+\*\*Distribution\*\*
+
+\- Publish source on GitHub.  
+
+\- Provide prebuilt Windows installer in Releases.  
+
+\- Include clear instructions for offline installation and model setup.
+
+
+
+---
+
+
+
+\## README content to include in repo root
+
+
+
+Add a top section with badges and the Creator \& Community Links block.
+
+
+
+\*\*Badges example\*\*
+
+```md
+
+\[!\[YouTube](https://img.shields.io/badge/YouTube-WayaCreate-red)](https://www.youtube.com/@wayasteurbaut)
+
+\[!\[TikTok](https://img.shields.io/badge/TikTok-WayaCreateYTR-black)](https://www.tiktok.com/@wayacreateytr)
+
+\[!\[Website](https://img.shields.io/badge/Website-WayaHub-blue)](https://wayashub.framer.ai/)
+
+\[!\[Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2)](https://discord.com/invite/u7GA3MEa7X)
+
+```
+
+
+
+\*\*Creator and community links\*\*
+
+```md
+
+\### Creator \& Community Links
+
+
+
+\- \*\*YouTube – WayaCreate\*\*  
+
+&nbsp; https://www.youtube.com/@wayasteurbaut
+
+
+
+\- \*\*TikTok – WayaCreateYTR\*\*  
+
+&nbsp; https://www.tiktok.com/@wayacreateytr
+
+
+
+\- \*\*Website – WayaHub\*\*  
+
+&nbsp; https://wayashub.framer.ai/
+
+
+
+\- \*\*Blog – WayaHub Blogspot\*\*  
+
+&nbsp; https://wayashub.blogspot.com
+
+
+
+\- \*\*Discord – WayaCreate Community\*\*  
+
+&nbsp; https://discord.com/invite/u7GA3MEa7X
+
+
+
+\- \*\*Fiverr Reference\*\*  
+
+&nbsp; https://www.fiverr.com/mustafamasoodm/record-and-create-a-minecraft-server-trailer-for-you
+
+```
+
+
+
+---
+
+
+
+\## Settings and permissions
+
+
+
+\*\*Permissions center\*\*
+
+\- Centralized settings page for:
+
+&nbsp; - \*\*Mouse and keyboard control\*\* (grant/revoke)  
+
+&nbsp; - \*\*Screen capture\*\* (grant/revoke)  
+
+&nbsp; - \*\*Voice input\*\* (enable/disable, engine selection)  
+
+&nbsp; - \*\*Local learning\*\* (enable/disable, clear data)  
+
+&nbsp; - \*\*Generated tools\*\* (approve by default or require manual approval)
+
+
+
+\*\*Safety\*\*
+
+\- Always show a clear consent dialog before enabling any input control.  
+
+\- Provide an emergency stop button that immediately halts all automation and input.  
+
+\- Log all permission grants and revocations.
+
+
+
+---
+
+
+
+\## Generated tools management
+
+
+
+\*\*Storage\*\*
+
+\- Generated tools saved under `/tools/generated` or `/mcp\_local`.
+
+
+
+\*\*UI\*\*
+
+\- List of generated tools with metadata (name, created date, triggers, last run).  
+
+\- Buttons to \*\*Edit\*\*, \*\*Enable/Disable\*\*, \*\*Run\*\*, \*\*Delete\*\*, and \*\*View Logs\*\*.  
+
+\- Preview and manual approval step before first activation.
+
+
+
+---
+
+
+
+\## Development notes and best practices
+
+
+
+\- Keep model inference local and provide clear guidance on VRAM and CPU requirements.  
+
+\- Use sandboxed execution for generated scripts to limit unintended system changes.  
+
+\- Encrypt local learning data and provide a one‑click clear option.  
+
+\- Provide unit and integration tests for automation flows and vision components.  
+
+\- Document third‑party dependencies and licenses.
+
+
+
+---
+
+
+
+\## Contributing
+
+
+
+\*\*How to contribute\*\*
+
+\- Fork the repo, create a feature branch, and open a pull request.  
+
+\- Include tests and documentation for new features.  
+
+\- Respect privacy and security guidelines when adding features that access system resources.
+
+
+
+\*\*Code of conduct\*\*
+
+\- Maintain respectful collaboration and clear, constructive feedback.
+
+
+
+---
+
+
+
+\## License
+
+
+
+Add an open‑source license of your choice (MIT recommended for permissive use). Include a `LICENSE` file in the repo root.
+
+
+
+---
+
+
+
+\## Attribution and About
+
+
+
+\*\*AquaJarvis Vision – Local Desktop Vision \& Automation Tool\*\*  
+
+\*\*Created and adapted by Waya Steurbaut\*\* — transforming the original repo into a local desktop application.
+
+
+
+\*\*About screen content\*\*
+
+\- App name and short description.  
+
+\- Version and build info.  
+
+\- Creator \& Community Links (clickable, open in system browser).  
+
+\- Short privacy statement: local by default; data is not sent online unless explicitly enabled.
+
+
+
+---
+
+
+
+\## Next steps I will follow for you
+
+
+
+1\. Ensure the current modified repo is pushed to your GitHub account.  
+
+2\. In the same folder, remove all files except `.git`.  
+
+3\. Scaffold the Electron app structure and add the features described above.  
+
+4\. Add onboarding, voice, local learning, and generated tools UI.  
+
+5\. Add build scripts and produce a Windows installer.  
+
+6\. Populate README.md with the content above, badges, and social links.  
+
+7\. Commit and push changes to `AquaJarvis-Vision` repo.
+
+
+
+---
+
+
+
+\## Contact and links
+
+
+
+\- \*\*YouTube – WayaCreate\*\*  
+
+&nbsp; https://www.youtube.com/@wayasteurbaut
+
+
+
+\- \*\*TikTok – WayaCreateYTR\*\*  
+
+&nbsp; https://www.tiktok.com/@wayacreateytr
+
+
+
+\- \*\*Website – WayaHub\*\*  
+
+&nbsp; https://wayashub.framer.ai/
+
+
+
+\- \*\*Blog – WayaHub Blogspot\*\*  
+
+&nbsp; https://wayashub.blogspot.com
+
+
+
+\- \*\*Discord – WayaCreate Community\*\*  
+
+&nbsp; https://discord.com/invite/u7GA3MEa7X
+
+
+
+\- \*\*Fiverr Reference\*\*  
+
+&nbsp; https://www.fiverr.com/mustafamasoodm/record-and-create-a-minecraft-server-trailer-for-you
+
+
+
+---
+
+
+
+\*\*End of README content\*\*
+
+
+
+"# aquajarvis-vision" 
